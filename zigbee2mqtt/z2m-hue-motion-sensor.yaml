@@ -1,0 +1,67 @@
+blueprint:
+  name: Zigbee2MQTT - Hue Motion Sensor (9290012607)
+  description: 
+    This blueprint is for the Hue Motion Sensor (9290012607) being controlled via Zigbee2MQTT.
+  domain: automation
+  input:
+    motion_sensor:
+      name: Motion Sensor
+      description: Sensor
+      selector:
+        entity:
+          integration: mqtt
+          domain: binary_sensor
+          device_class: motion
+    target_lights:
+      name: lights
+      description: The lights to control with the motion sensor,
+      selector:
+        target:
+          entity:
+            domain: light
+    max_lux:
+      name: Maximum Lux
+      description: If the lux value of the sensor is higher than this, then the lights will not be toggled on. Set to zero to disable.
+      number:
+        min: 0
+        max: 1000
+        unit_of_measurement: lux
+        mode: slider
+    timeout:
+      name: Timeout
+      description: How long to keep the lights on for after the sensor stops detecting motion.
+      number:
+        min: 0
+        max: 1000
+        unit_of_measurement: seconds
+        mode: slider
+  source_url: https://github.com/nikdoof/homeassistant-blueprints/blob/main/zigbee2mqtt/z2m-hue-motion-sensor.yaml
+mode: restart
+max_exceeded: silent
+trigger:
+  - platform: state
+    entity_id: !input "motion_sensor"
+    to: on
+  - platform: state
+    entity_id: !input "motion_sensor"
+    to: off
+    for: 
+      seconds: !input timeout
+action:
+  - condition: or
+    conditions:
+      - condition: state
+        entity_id: !input "motion_sensor"
+        state: "off"
+      - condition: numeric_state
+        entity_id: !input "motion_sensor"
+        attribute: illuminance_lux
+        above: -1
+        below: !input "max_lux"
+  - service: >
+      {% if trigger.to_state.state == "on" %}
+        light.turn_on
+      {% else %}
+        light.turn_off
+      {% endif %}
+    target: !input target_light
