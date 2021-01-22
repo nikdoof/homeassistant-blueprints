@@ -23,6 +23,7 @@ blueprint:
     max_lux:
       name: Maximum Lux
       description: If the lux value of the sensor is higher than this, then the lights will not be toggled on. Set to zero to disable.
+      default: 140
       selector:
         number:
           min: 0
@@ -31,6 +32,7 @@ blueprint:
     timeout:
       name: Timeout
       description: How long to keep the lights on for after the sensor stops detecting motion.
+      default: 120
       selector:
         number:
           min: 0
