@@ -13,13 +13,13 @@ blueprint:
         entity:
           integration: mqtt
           domain: sensor
-    on:
+    'on':
       name: "On"
       description: Action to run when ON button SHORT press
       default: []
       selector:
         action: {}
-    off:
+    'off':
       name: "Off"
       description: Action to run when OFF button SHORT pressed
       default: []
