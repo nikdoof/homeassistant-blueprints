@@ -1,5 +1,5 @@
 blueprint:
-  name: Zigbee2MQTT - Hue Dimmer Switch (324131092621) - Configurable
+  name: Zigbee2MQTT - Hue Dimmer Switch (324131092621) - Lights
   description:
     This blueprint is for the Hue Dimmer Switch (324131092621) being controlled via Zigbee2MQTT. This blueprint provides
     configuration for a light set, rather than individual buttons.
