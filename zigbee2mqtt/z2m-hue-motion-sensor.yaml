@@ -2,6 +2,7 @@ blueprint:
   name: Zigbee2MQTT - Hue Motion Sensor (9290012607)
   description: 
     This blueprint is for the Hue Motion Sensor (9290012607) being controlled via Zigbee2MQTT.
+    If you have `occupancy_timeout` set on your Hue Sensors then the timeout below will be in addition of that timeout.
   domain: automation
   input:
     motion_sensor:
@@ -65,3 +66,6 @@ action:
         light.turn_off
       {% endif %}
     target: !input target_lights
+    data:
+      transition: 1
+      brightness: 255
