@@ -1,0 +1,106 @@
+blueprint:
+  name: Zigbee2MQTT - IKEA Tradfri Remote Control (E1524/E1810)
+  description:
+    This blueprint is for the IKEA 5 button Trafri Remote Control (E1524/E1810) being controlled via Zigbee2MQTT.
+    Hold buttons will be repeated every second, so are useful for brightness adjustments or other adjustable
+    values.
+  domain: automation
+  input:
+    remote:
+      name: Remote
+      description: IKEA 5 Button Remote
+      selector:
+        entity:
+          integration: mqtt
+          domain: sensor
+    toggle:
+      name: Toggle
+      default: []
+      selector:
+        action: {}
+    toggle_hold:
+      name: Toggle Hold
+      default: []
+      selector:
+        action: {}
+    brightness_up_click:
+      name: Brightness Up
+      default: []
+      selector:
+        action: {}
+    brightness_up_hold:
+      name: Brightness Up Hold
+      default: []
+      selector:
+        action: {}
+    brightness_down_click:
+      name: Brightness Down
+      default: []
+      selector:
+        action: {}
+    brightness_down_hold:
+      name: Brightness Down Hold
+      default: []
+      selector:
+        action: {}
+    arrow_left_click:
+      name: Left Arrow
+      default: []
+      selector:
+        action: {}
+    arrow_left_hold:
+      name: Left Arrow Hold
+      default: []
+      selector:
+        action: {}
+    arrow_right_click:
+      name: Right Arrow
+      default: []
+      selector:
+        action: {}
+    arrow_right_hold:
+      name: Right Arrow Hold
+      default: []
+      selector:
+        action: {}
+  source_url: https://community.home-assistant.io/t/zigbee2mqtt-ikea-on-off-switch-general-use/263895
+mode: restart
+max_exceeded: silent
+trigger:
+  - platform: state
+    entity_id: !input "remote"
+    attribute: action
+action:
+  - variables:
+      command: "{{ trigger.to_state.state }}"
+  - choose:
+      - conditions:
+          - "{{ command == 'toggle' }}"
+        sequence: !input "toggle"
+      - conditions:
+          - "{{ command == 'toggle_hold' }}"
+        sequence: !input "toggle_hold"
+      - conditions:
+          - "{{ command == 'brightness_up_click' }}"
+        sequence: !input "brightness_up_click"
+      - conditions:
+          - "{{ command == 'brightness_up_hold' }}"
+        sequence: !input "brightness_up_hold"
+      - conditions:
+          - "{{ command == 'brightness_down_click' }}"
+        sequence: !input "brightness_down_click"
+      - conditions:
+          - "{{ command == 'brightness_down_hold' }}"
+        sequence: !input "brightness_down_hold"
+      - conditions:
+          - "{{ command == 'arrow_left_click' }}"
+        sequence: !input "arrow_left_click"
+      - conditions:
+          - "{{ command == 'arrow_left_hold' }}"
+        sequence: !input "arrow_left_hold"
+      - conditions:
+          - "{{ command == 'arrow_right_click' }}"
+        sequence: !input "arrow_right_click"
+      - conditions:
+          - "{{ command == 'arrow_left_hold' }}"
+        sequence: !input "arrow_left_hold"
