@@ -12,7 +12,6 @@ blueprint:
         entity:
           integration: mqtt
           domain: sensor
-          device_class: action
     on-press:
       name: "On Press"
       description: Action to run when "On" button is pressed
