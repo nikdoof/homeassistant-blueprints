@@ -1,0 +1,62 @@
+blueprint:
+  name: Zigbee2MQTT - IKEA Tradfri On/Off Switch (E1743)
+  description: 
+    This blueprint is for the IKEA 2 button Trafri On/Off Switch (E1524/E1810) being controlled via Zigbee2MQTT.
+    Hold buttons will be repeated every second, so are useful for brightness adjustments or other adjustable
+    values.
+  domain: automation
+  input:
+    remote:
+      name: Remote
+      description: IKEA remote to use
+      selector:
+        entity:
+          integration: mqtt
+          domain: sensor
+    on:
+      name: On
+      description: Action to run when ON button SHORT press
+      default: []
+      selector:
+        action: {}
+    off:
+      name: Off 
+      description: Action to run when OFF button SHORT pressed
+      default: []
+      selector:
+        action: {}
+    on_hold:
+      name: On Hold
+      description: Action to run when ON button LONG pressed (brightness up)
+      default: []
+      selector:
+        action: {}
+    off_hold:
+      name: Off Hold
+      description: Action to run when OFF button LONG pressed (brightness down)
+      default: []
+      selector:
+        action: {}
+  source_url: https://community.home-assistant.io/t/zigbee2mqtt-ikea-on-off-switch-general-use/263895
+mode: restart
+max_exceeded: silent
+trigger:
+- platform: state
+  entity_id: !input 'remote'
+  attribute: action
+action:
+- variables:
+    command: '{{ trigger.to_state.state }}'
+- choose:
+  - conditions:
+    - '{{ command == ''on'' }}'
+    sequence: !input 'on_button_short'
+  - conditions:
+    - '{{ command == ''off'' }}'
+    sequence: !input 'off_button_short'
+  - conditions:
+    - '{{ command == ''brightness_move_up'' }}'
+    sequence: !input 'on_hold'
+  - conditions:
+    - '{{ command == ''brightness_move_down'' }}'
+    sequence: !input 'off_hold'
