@@ -94,5 +94,5 @@ action:
           - "{{ command == 'down-press' }}"
         sequence: !input "down-press"
       - conditions:
-          - "{{ command == 'on-hold' }}"
+          - "{{ command == 'down-hold' }}"
         sequence: !input "down-hold"

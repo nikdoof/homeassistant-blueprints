@@ -57,7 +57,7 @@ action:
           - choose:
               - conditions: "{{ force_brightness }}"
                 sequence:
-                  - service: light.toggle
+                  - service: light.turn_on
                     target: !input light
                     data:
                       transition: 1
@@ -107,7 +107,7 @@ action:
               brightness_step_pct: -10
               transition: 1
       - conditions:
-          - "{{ command == 'on-hold' }}"
+          - "{{ command == 'down-hold' }}"
         sequence:
           - repeat:
               until:
