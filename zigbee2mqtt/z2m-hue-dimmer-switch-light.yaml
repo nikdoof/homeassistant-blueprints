@@ -7,12 +7,11 @@ blueprint:
   input:
     dimmer_switch:
       name: Dimmer Switch
-      description: The Hue Dimmer Switch to use for this automation.
+      description: The Hue Dimmer Switch to use for this automation. Pick the "Action" sensor for the Switch
       selector:
         entity:
           integration: mqtt
           domain: sensor
-          device_class: action
     light:
       name: Lights
       description: The lights to control with the motion sensor.
