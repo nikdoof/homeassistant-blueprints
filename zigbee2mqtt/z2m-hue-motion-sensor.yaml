@@ -22,19 +22,19 @@ blueprint:
     max_lux:
       name: Maximum Lux
       description: If the lux value of the sensor is higher than this, then the lights will not be toggled on. Set to zero to disable.
-      number:
-        min: 0
-        max: 1000
-        unit_of_measurement: lux
-        mode: slider
+      selector:
+        number:
+          min: 0
+          max: 1000
+          unit_of_measurement: lux
     timeout:
       name: Timeout
       description: How long to keep the lights on for after the sensor stops detecting motion.
-      number:
-        min: 0
-        max: 1000
-        unit_of_measurement: seconds
-        mode: slider
+      selector:
+        number:
+          min: 0
+          max: 1000
+          unit_of_measurement: seconds
   source_url: https://github.com/nikdoof/homeassistant-blueprints/blob/main/zigbee2mqtt/z2m-hue-motion-sensor.yaml
 mode: restart
 max_exceeded: silent
