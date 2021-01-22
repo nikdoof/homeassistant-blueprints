@@ -6,15 +6,15 @@ blueprint:
   input:
     motion_sensor:
       name: Motion Sensor
-      description: Sensor
+      description: The Hue Motion Sensor to use for this automation.
       selector:
         entity:
           integration: mqtt
           domain: binary_sensor
           device_class: motion
     target_lights:
-      name: lights
-      description: The lights to control with the motion sensor,
+      name: Lights
+      description: The lights to control with the motion sensor.
       selector:
         target:
           entity:
