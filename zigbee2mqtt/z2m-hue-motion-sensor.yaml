@@ -64,4 +64,4 @@ action:
       {% else %}
         light.turn_off
       {% endif %}
-    target: !input target_light
+    target: !input target_lights
