@@ -1,0 +1,98 @@
+blueprint:
+  name: Zigbee2MQTT - Hue Dimmer Switch (324131092621) - Configurable
+  description:
+    This blueprint is for the Hue Dimmer Switch (324131092621) being controlled via Zigbee2MQTT. This blueprint provides
+    configurable buttons for any action, rather than managing a set of lights directly.
+  domain: automation
+  input:
+    dimmer_switch:
+      name: Dimmer Switch
+      description: The Hue Dimmer Switch to use for this automation.
+      selector:
+        entity:
+          integration: mqtt
+          domain: sensor
+          device_class: action
+    on-press:
+      name: "On Press"
+      description: Action to run when "On" button is pressed
+      default: []
+      selector:
+        action: {}
+    on-hold:
+      name: "On Hold"
+      description: Action to run when "On" button is held
+      default: []
+      selector:
+        action: {}
+    off-press:
+      name: "Off Press"
+      description: Action to run when "Off" button is pressed
+      default: []
+      selector:
+        action: {}
+    off-hold:
+      name: "Off Hold"
+      description: Action to run when "Off" button is held
+      default: []
+      selector:
+        action: {}
+    up-press:
+      name: "Up Press"
+      description: Action to run when "Up" button is pressed
+      default: []
+      selector:
+        action: {}
+    up-hold:
+      name: "Up Hold"
+      description: Action to run when "Up" button is held
+      default: []
+      selector:
+        action: {}
+    down-press:
+      name: "Down Press"
+      description: Action to run when "Down" button is pressed
+      default: []
+      selector:
+        action: {}
+    down-hold:
+      name: "Down Hold"
+      description: Action to run when "Down" button is held
+      default: []
+      selector:
+        action: {}
+  source_url: https://github.com/nikdoof/homeassistant-blueprints/blob/main/zigbee2mqtt/z2m-hue-dimmer-switch.yaml
+mode: restart
+max_exceeded: silent
+trigger:
+  - platform: state
+    entity_id: !input "dimmer_switch"
+    attribute: action
+action:
+  - variables:
+      command: "{{ trigger.to_state.state }}"
+  - choose:
+      - conditions:
+          - "{{ command == 'on-press' }}"
+        sequence: !input "on-press"
+      - conditions:
+          - "{{ command == 'on-hold' }}"
+        sequence: !input "on-hold"
+      - conditions:
+          - "{{ command == 'off-press' }}"
+        sequence: !input "off-press"
+      - conditions:
+          - "{{ command == 'on-hold' }}"
+        sequence: !input "off-hold"
+      - conditions:
+          - "{{ command == 'up-press' }}"
+        sequence: !input "up-press"
+      - conditions:
+          - "{{ command == 'up-hold' }}"
+        sequence: !input "up-hold"
+      - conditions:
+          - "{{ command == 'down-press' }}"
+        sequence: !input "down-press"
+      - conditions:
+          - "{{ command == 'on-hold' }}"
+        sequence: !input "down-hold"

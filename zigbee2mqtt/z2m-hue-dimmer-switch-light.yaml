@@ -1,0 +1,125 @@
+blueprint:
+  name: Zigbee2MQTT - Hue Dimmer Switch (324131092621) - Configurable
+  description:
+    This blueprint is for the Hue Dimmer Switch (324131092621) being controlled via Zigbee2MQTT. This blueprint provides
+    configuration for a light set, rather than individual buttons.
+  domain: automation
+  input:
+    dimmer_switch:
+      name: Dimmer Switch
+      description: The Hue Dimmer Switch to use for this automation.
+      selector:
+        entity:
+          integration: mqtt
+          domain: sensor
+          device_class: action
+    light:
+      name: Lights
+      description: The lights to control with the motion sensor.
+      selector:
+        target:
+          entity:
+            domain: light
+    force_brightness:
+      name: Force turn on brightness
+      description: >
+        Force the brightness to the set level below, when the "on" button on
+        the remote is pushed and lights turn on.
+      default: false
+      selector:
+        boolean:
+    brightness:
+      name: Brightness
+      description: Brightness of the light(s) when turning on
+      default: 50
+      selector:
+        number:
+          min: 0
+          max: 100
+          mode: slider
+          step: 1
+          unit_of_measurement: "%"
+  source_url: https://github.com/nikdoof/homeassistant-blueprints/blob/main/zigbee2mqtt/z2m-hue-dimmer-switch.yaml
+mode: restart
+max_exceeded: silent
+variables:
+  force_brightness: !input force_brightness
+trigger:
+  - platform: state
+    entity_id: !input "dimmer_switch"
+    attribute: action
+action:
+  - variables:
+      command: "{{ trigger.to_state.state }}"
+  - choose:
+      - conditions:
+          - "{{ command == 'on-press' }}"
+        sequence:
+          - choose:
+              - conditions: "{{ force_brightness }}"
+                sequence:
+                  - service: light.toggle
+                    target: !input light
+                    data:
+                      transition: 1
+                      brightness_pct: !input brightness
+            default:
+              - service: light.toggle
+                target: !input light
+                data:
+                  transition: 1
+      - conditions:
+          - "{{ command == 'off-press' }}"
+        sequence:
+          - service: light.turn_off
+            target: !input light
+            data:
+              transition: 1
+      - conditions:
+          - "{{ command == 'up-press' }}"
+        sequence:
+          - service: light.turn_on
+            target: !input light
+            data:
+              brightness_step_pct: 10
+              transition: 1
+      - conditions:
+          - "{{ command == 'up-hold' }}"
+        sequence:
+          - repeat:
+              until:
+                - condition: state
+                  entity_id: !input dimmer_switch
+                  state: up-hold-release
+                  attribute: action
+              sequence:
+                - service: light.turn_on
+                  data:
+                    brightness_step_pct: 10
+                    transition: 1
+                  target: !input light
+                - delay: "1"
+      - conditions:
+          - "{{ command == 'down-press' }}"
+        sequence:
+          - service: light.turn_on
+            target: !input light
+            data:
+              brightness_step_pct: -10
+              transition: 1
+      - conditions:
+          - "{{ command == 'on-hold' }}"
+        sequence:
+          - repeat:
+              until:
+                - condition: state
+                  entity_id: !input dimmer_switch
+                  state: down-hold-release
+                  attribute: action
+              sequence:
+                - service: light.turn_on
+                  data:
+                    brightness_step_pct: -10
+                    transition: 1
+                  target: !input light
+                - delay: "1"
