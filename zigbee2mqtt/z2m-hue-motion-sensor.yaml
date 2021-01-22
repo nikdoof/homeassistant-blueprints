@@ -41,10 +41,10 @@ max_exceeded: silent
 trigger:
   - platform: state
     entity_id: !input "motion_sensor"
-    to: on
+    to: 'on'
   - platform: state
     entity_id: !input "motion_sensor"
-    to: off
+    to: 'off'
     for: 
       seconds: !input timeout
 action:
