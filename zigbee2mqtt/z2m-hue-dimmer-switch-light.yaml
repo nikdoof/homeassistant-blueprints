@@ -63,7 +63,7 @@ action:
                       transition: 1
                       brightness_pct: !input brightness
             default:
-              - service: light.toggle
+              - service: light.turn_on
                 target: !input light
                 data:
                   transition: 1
