@@ -1,6 +1,6 @@
 blueprint:
   name: Zigbee2MQTT - Hue Motion Sensor (9290012607)
-  description: 
+  description:
     This blueprint is for the Hue Motion Sensor (9290012607) being controlled via Zigbee2MQTT.
     If you have `occupancy_timeout` set on your Hue Sensors then the timeout below will be in addition of that timeout.
   domain: automation
@@ -38,36 +38,50 @@ blueprint:
           min: 0
           max: 1000
           unit_of_measurement: seconds
+    brightness:
+      name: Brightness
+      description: Brightness of the light(s) when turning on
+      default: 100
+      selector:
+        number:
+          min: 0
+          max: 100
+          mode: slider
+          step: 1
+          unit_of_measurement: "%"
   source_url: https://github.com/nikdoof/homeassistant-blueprints/blob/main/zigbee2mqtt/z2m-hue-motion-sensor.yaml
 mode: restart
 max_exceeded: silent
 trigger:
   - platform: state
-    entity_id: !input "motion_sensor"
-    to: 'on'
+    entity_id: !input motion_sensor
+    to: "on"
   - platform: state
-    entity_id: !input "motion_sensor"
-    to: 'off'
-    for: 
+    entity_id: !input motion_sensor
+    to: "off"
+    for:
       seconds: !input timeout
 action:
-  - condition: or
-    conditions:
-      - condition: state
-        entity_id: !input "motion_sensor"
-        state: "off"
-      - condition: numeric_state
-        entity_id: !input "motion_sensor"
-        attribute: illuminance_lux
-        above: -1
-        below: !input "max_lux"
-  - service: >
-      {% if trigger.to_state.state == "on" %}
-        light.turn_on
-      {% else %}
-        light.turn_off
-      {% endif %}
-    target: !input target_lights
-    data:
-      transition: 1
-      brightness: 255
+  - choose:
+      - conditions:
+          - condition: template
+            value_template: {{ trigger.to_state.state == "on" }}
+          - condition: numeric_state
+            entity_id: !input motion_sensor
+            attribute: illuminance_lux
+            above: -1
+            below: !input max_lux
+        sequence:
+          - service: light.turn_on
+            target: !input target_lights
+            data:
+              transition: 1
+              brightness_pct: !input brightness
+      - conditions:
+          - condition: template
+            value_template: {{ trigger.to_state.state == "off" }}
+        sequence:
+          - service: light.turn_off
+            target: !input target_lights
+            data:
+              transition: 1
