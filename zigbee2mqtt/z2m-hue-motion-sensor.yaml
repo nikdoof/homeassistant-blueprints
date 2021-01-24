@@ -65,7 +65,7 @@ action:
   - choose:
       - conditions:
           - condition: template
-            value_template: {{ trigger.to_state.state == "on" }}
+            value_template: "{{ trigger.to_state.state == 'on' }}"
           - condition: numeric_state
             entity_id: !input motion_sensor
             attribute: illuminance_lux
@@ -79,7 +79,7 @@ action:
               brightness_pct: !input brightness
       - conditions:
           - condition: template
-            value_template: {{ trigger.to_state.state == "off" }}
+            value_template: "{{ trigger.to_state.state == 'off' }}"
         sequence:
           - service: light.turn_off
             target: !input target_lights
