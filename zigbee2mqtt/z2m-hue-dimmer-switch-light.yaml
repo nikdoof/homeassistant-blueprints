@@ -49,7 +49,7 @@ trigger:
     attribute: action
 action:
   - variables:
-      command: "{{ trigger.to_state.state }}"
+      command: '{{ trigger.to_state.attributes.action }}'
   - choose:
       - conditions:
           - "{{ command == 'on-press' }}"
