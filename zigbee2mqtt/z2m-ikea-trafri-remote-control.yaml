@@ -1,9 +1,9 @@
 blueprint:
   name: Zigbee2MQTT - IKEA Tradfri Remote Control (E1524/E1810)
   description:
-    This blueprint is for the IKEA 5 button Trafri Remote Control (E1524/E1810) being controlled via Zigbee2MQTT.
-    Hold buttons will be repeated every second, so are useful for brightness adjustments or other adjustable
-    values.
+    This blueprint is for the IKEA 5 button Trafri Remote Control (E1524/E1810)
+    being controlled via Zigbee2MQTT. Hold buttons will be repeated every second,
+    so are useful for brightness adjustments or other adjustable values.
   domain: automation
   input:
     remote:

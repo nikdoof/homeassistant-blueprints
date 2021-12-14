@@ -1,9 +1,9 @@
 blueprint:
   name: Zigbee2MQTT - IKEA Tradfri On/Off Switch (E1743)
   description:
-    This blueprint is for the IKEA 2 button Trafri On/Off Switch (E1524/E1810) being controlled via Zigbee2MQTT.
-    Hold buttons will be repeated every second, so are useful for brightness adjustments or other adjustable
-    values.
+    This blueprint is for the IKEA 2 button Trafri On/Off Switch (E1524/E1810)
+    being controlled via Zigbee2MQTT. Hold buttons will be repeated every second,
+    so are useful for brightness adjustments or other adjustable values.
   domain: automation
   input:
     remote:
@@ -13,13 +13,13 @@ blueprint:
         entity:
           integration: mqtt
           domain: sensor
-    'on':
+    "on":
       name: "On"
       description: Action to run when ON button SHORT press
       default: []
       selector:
         action: {}
-    'off':
+    "off":
       name: "Off"
       description: Action to run when OFF button SHORT pressed
       default: []
@@ -46,7 +46,7 @@ trigger:
     attribute: action
 action:
   - variables:
-      command: '{{ trigger.to_state.attributes.action }}'
+      command: "{{ trigger.to_state.state }}"
   - choose:
       - conditions:
           - "{{ command == 'on' }}"

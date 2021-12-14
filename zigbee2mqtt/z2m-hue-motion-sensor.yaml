@@ -1,8 +1,9 @@
 blueprint:
   name: Zigbee2MQTT - Hue Motion Sensor (9290012607)
   description:
-    This blueprint is for the Hue Motion Sensor (9290012607) being controlled via Zigbee2MQTT.
-    If you have `occupancy_timeout` set on your Hue Sensors then the timeout below will be in addition of that timeout.
+    This blueprint is for the Hue Motion Sensor (9290012607) being controlled
+    via Zigbee2MQTT. If you have `occupancy_timeout` set on your Hue Sensors then
+    the timeout below will be in addition of that timeout.
   domain: automation
   input:
     motion_sensor:
@@ -22,66 +23,74 @@ blueprint:
             domain: light
     max_lux:
       name: Maximum Lux
-      description: If the lux value of the sensor is higher than this, then the lights will not be toggled on. Set to zero to disable.
+      description:
+        If the lux value of the sensor is higher than this, then the lights
+        will not be toggled on. Set to zero to disable.
       default: 140
       selector:
         number:
-          min: 0
-          max: 1000
+          min: 0.0
+          max: 1000.0
           unit_of_measurement: lux
+          mode: slider
+          step: 1.0
     timeout:
       name: Timeout
-      description: How long to keep the lights on for after the sensor stops detecting motion.
+      description:
+        How long to keep the lights on for after the sensor stops detecting
+        motion.
       default: 120
       selector:
         number:
-          min: 0
-          max: 1000
+          min: 0.0
+          max: 1000.0
           unit_of_measurement: seconds
+          mode: slider
+          step: 1.0
     brightness:
       name: Brightness
       description: Brightness of the light(s) when turning on
       default: 100
       selector:
         number:
-          min: 0
-          max: 100
+          min: 0.0
+          max: 100.0
           mode: slider
-          step: 1
+          step: 1.0
           unit_of_measurement: "%"
   source_url: https://github.com/nikdoof/homeassistant-blueprints/blob/main/zigbee2mqtt/z2m-hue-motion-sensor.yaml
 mode: restart
 max_exceeded: silent
 trigger:
   - platform: state
-    entity_id: !input motion_sensor
+    entity_id: !input "motion_sensor"
     to: "on"
   - platform: state
-    entity_id: !input motion_sensor
+    entity_id: !input "motion_sensor"
     to: "off"
     for:
-      seconds: !input timeout
+      seconds: !input "timeout"
 action:
   - choose:
       - conditions:
           - condition: template
             value_template: "{{ trigger.to_state.state == 'on' }}"
           - condition: numeric_state
-            entity_id: !input motion_sensor
+            entity_id: !input "motion_sensor"
             attribute: illuminance_lux
             above: -1
-            below: !input max_lux
+            below: !input "max_lux"
         sequence:
           - service: light.turn_on
-            target: !input target_lights
+            target: !input "target_lights"
             data:
               transition: 1
-              brightness_pct: !input brightness
+              brightness_pct: !input "brightness"
       - conditions:
           - condition: template
             value_template: "{{ trigger.to_state.state == 'off' }}"
         sequence:
           - service: light.turn_off
-            target: !input target_lights
+            target: !input "target_lights"
             data:
               transition: 1

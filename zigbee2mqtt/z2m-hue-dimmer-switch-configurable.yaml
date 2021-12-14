@@ -1,8 +1,9 @@
 blueprint:
   name: Zigbee2MQTT - Hue Dimmer Switch (324131092621) - Configurable
   description:
-    This blueprint is for the Hue Dimmer Switch (324131092621) being controlled via Zigbee2MQTT. This blueprint provides
-    configurable buttons for any action, rather than managing a set of lights directly.
+    This blueprint is for the Hue Dimmer Switch (324131092621) being controlled
+    via Zigbee2MQTT. This blueprint provides configurable buttons for any action,
+    rather than managing a set of lights directly.
   domain: automation
   input:
     dimmer_switch:
@@ -12,50 +13,51 @@ blueprint:
         entity:
           integration: mqtt
           domain: sensor
+          device_class: action
     on-press:
-      name: "On Press"
+      name: On Press
       description: Action to run when "On" button is pressed
       default: []
       selector:
         action: {}
     on-hold:
-      name: "On Hold"
+      name: On Hold
       description: Action to run when "On" button is held
       default: []
       selector:
         action: {}
     off-press:
-      name: "Off Press"
+      name: Off Press
       description: Action to run when "Off" button is pressed
       default: []
       selector:
         action: {}
     off-hold:
-      name: "Off Hold"
+      name: Off Hold
       description: Action to run when "Off" button is held
       default: []
       selector:
         action: {}
     up-press:
-      name: "Up Press"
+      name: Up Press
       description: Action to run when "Up" button is pressed
       default: []
       selector:
         action: {}
     up-hold:
-      name: "Up Hold"
+      name: Up Hold
       description: Action to run when "Up" button is held
       default: []
       selector:
         action: {}
     down-press:
-      name: "Down Press"
+      name: Down Press
       description: Action to run when "Down" button is pressed
       default: []
       selector:
         action: {}
     down-hold:
-      name: "Down Hold"
+      name: Down Hold
       description: Action to run when "Down" button is held
       default: []
       selector:
@@ -69,7 +71,7 @@ trigger:
     attribute: action
 action:
   - variables:
-      command: '{{ trigger.to_state.attributes.action }}'
+      command: "{{ trigger.to_state.state }}"
   - choose:
       - conditions:
           - "{{ command == 'on-press' }}"
