@@ -1,0 +1,74 @@
+blueprint:
+  name: Zigbee2MQTT - IKEA Tradfri Motion Sensor (E1745)
+  description: This blueprint is for the IKEA E1745 Motion Sensor
+  domain: automation
+  input:
+    motion_sensor:
+      name: Motion Sensor
+      description: The Motion Sensor to use for this automation.
+      selector:
+        entity:
+          domain: binary_sensor
+          device_class: motion
+    target_lights:
+      name: Lights
+      description: The lights to control with the motion sensor.
+      selector:
+        target:
+          entity:
+            domain: light
+    timeout:
+      name: Timeout
+      description:
+        How long to keep the lights on for after the sensor stops detecting
+        motion.
+      default: 120
+      selector:
+        number:
+          min: 0.0
+          max: 1000.0
+          unit_of_measurement: seconds
+          mode: slider
+          step: 1.0
+    brightness:
+      name: Brightness
+      description: Brightness of the light(s) when turning on
+      default: 100
+      selector:
+        number:
+          min: 0.0
+          max: 100.0
+          mode: slider
+          step: 1.0
+          unit_of_measurement: "%"
+  source_url: https://github.com/nikdoof/homeassistant-blueprints/blob/main/zigbee2mqtt/z2m-ikea-tradfri-motion-sensor.yaml
+mode: restart
+max_exceeded: silent
+trigger:
+  - platform: state
+    entity_id: !input "motion_sensor"
+    to: "on"
+  - platform: state
+    entity_id: !input "motion_sensor"
+    to: "off"
+    for:
+      seconds: !input "timeout"
+action:
+  - choose:
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.to_state.state == 'on' }}"
+        sequence:
+          - service: light.turn_on
+            target: !input "target_lights"
+            data:
+              transition: 1
+              brightness_pct: !input "brightness"
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.to_state.state == 'off' }}"
+        sequence:
+          - service: light.turn_off
+            target: !input "target_lights"
+            data:
+              transition: 1
